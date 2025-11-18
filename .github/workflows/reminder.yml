@@ -1,0 +1,23 @@
+name: 深夜食堂点餐提醒
+
+on:
+  schedule:
+    # 在每个工作日的16:30运行 (UTC+8 时间，注意GitHub使用UTC时间，所以是08:30)
+    - cron: '30 08 * * 1-5'
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  send-reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 发送企业微信提醒
+        run: |
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d '{
+              "msgtype": "text",
+              "text": {
+                "content": "【深夜食堂】截单时间就要到啦，小伙伴们别忘了点餐哦！\n⏰截单时间16:30，快快打开点餐通道吧~\n企业微信-工作台-行政服务-深夜食堂（区域职场）\n温馨提示：深夜食堂订餐仅限绑定了工位的小伙伴，还未绑定工位的同学记得扫描桌上左下角二维码完成绑定（工位绑定后订餐权限次日生效）"
+              }
+            }' \
+            "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=89c6bcf5-0c76-4d27-9958-f871699f8e7b"
